@@ -8,34 +8,34 @@ namespace HangfireSampleNoDashboard
     {
         static void Main(string[] args)
         {
+            #region Hangfire configuration
             // Configure Hangfire to use In-memory
             GlobalConfiguration.Configuration.UseInMemoryStorage();
 
-            // Start two Hangfire server instances with different queues
-            var options1 = new BackgroundJobServerOptions
+            // Configure two Hangfire server instances with different queues
+            var server1Options = new BackgroundJobServerOptions
             {
                 ServerName = Settings.Server1Name,
                 Queues = Settings.Server1Queues,
                 WorkerCount = Settings.Server1WorkerCount
             };
 
-            var options2 = new BackgroundJobServerOptions
+            var server2Options = new BackgroundJobServerOptions
             {
                 ServerName = Settings.Server2Name,
                 Queues = Settings.Server2Queues,
                 WorkerCount = Settings.Server2WorkerCount
             };
+            #endregion
 
-            using (var server1 = new BackgroundJobServer(options1))
-            using (var server2 = new BackgroundJobServer(options2))
-            {
-                Console.WriteLine("Hangfire Server 1 and Server 2 started...");
+            using var server1 = new BackgroundJobServer(server1Options);
+            using var server2 = new BackgroundJobServer(server2Options);
+            Console.WriteLine("Hangfire Server 1 and Server 2 started...");
 
-                Settings.ScheduleJobs();
+            Settings.ScheduleJobs();
 
-                Console.WriteLine("jobs defined.");
-                Console.ReadLine();
-            }
+            Console.WriteLine("jobs defined.");
+            Console.ReadLine();
         }
     }
 }
